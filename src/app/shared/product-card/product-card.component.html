@@ -1,0 +1,22 @@
+<div class="bg-white rounded-xl shadow-sm overflow-hidden text-sm border border-gray-200 hover:shadow-md transition duration-150">
+    <!-- Product Image -->
+    <img
+      [src]="product['Product image']"
+      [alt]="product['Name of product']"
+      class="w-full h-48 object-contain p-4"
+    />
+  
+    <!-- Product Info -->
+    <div class="px-4 pb-4">
+      <h3 class="font-semibold text-base leading-snug h-[3.5rem]">
+        {{ product['Name of product'] }}
+      </h3>
+    </div>
+  
+    <!-- Divider -->
+    <div class="border-t border-gray-200 flex justify-between items-center text-gray-700 px-4 py-3 text-base font-semibold">
+      <span>${{ product['Sale_Price'] }}</span>
+      <span class="material-icons-outlined text-gray-500 cursor-pointer text-lg">shopping_cart</span>
+    </div>
+  </div>
+  

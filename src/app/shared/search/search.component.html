@@ -1,0 +1,56 @@
+<div class="relative w-[500px]">
+  <div class="flex border rounded-lg overflow-hidden h-10 bg-white">
+
+    <!-- Category Picker -->
+    <!-- <div class="flex items-center px-3 bg-gray-100">
+      <select
+        class="text-sm text-black bg-transparent focus:outline-none truncate max-w-[120px]"
+        [ngStyle]="{ 'font-size': selectedCategory.length > 18 ? '0.75rem' : '0.875rem' }"
+        [(ngModel)]="selectedCategory"
+      >
+      <option>All</option>
+        <option *ngFor="let cat of categories">{{ cat }}</option>
+      </select>
+    </div> -->
+
+    <div class="flex items-center bg-gray-100 px-3 h-full text-black text-sm pointer-events-none select-none">
+      <span class="mr-1">All</span>
+      <span class="material-icons text-xs text-gray-500">expand_more</span>
+    </div>
+    
+
+    <!-- Divider -->
+    <div class="w-px h-full bg-gray-300"></div>
+
+    <!-- Search Input -->
+    <input
+      type="text"
+      [(ngModel)]="query"
+      (ngModelChange)="search$.next($event)"
+      (keydown.enter)="triggerSearch()"
+      placeholder="Search for products..."
+      class="flex-1 px-3 py-2 text-sm text-black bg-transparent outline-none"
+    />
+
+    <!-- Search Icon -->
+    <button class="flex items-center justify-center px-3 bg-gray-100 text-gray-500" (click)="triggerSearch()">
+      <span class="material-icons-outlined text-lg">search</span>
+    </button>
+  </div>
+
+  <!-- Search results -->
+  <ul *ngIf="results.length" class="absolute bg-white border w-full shadow z-10 mt-1 rounded text-sm">
+    <li
+      *ngFor="let item of results"
+      (click)="triggerSearchFromResult(item['Name of product'])"
+      class="flex items-center gap-3 px-3 py-2 hover:bg-gray-100 cursor-pointer"
+    >
+      <img [src]="item['Product image']" alt="Product" class="h-10 w-10 object-cover rounded" />
+      <div class="flex-1">
+        <p class="font-medium">{{ item['Name of product'] }}</p>
+        <p class="text-xs text-gray-500">{{ item['Brand name'] }}</p>
+      </div>
+      <div class="text-sm font-semibold text-indigo-600">${{ item['Sale_Price'] }}</div>
+    </li>
+  </ul>
+</div>
