@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Product, GPAProduct } from '../../models/product.model';
 import { MatTooltipModule } from '@angular/material/tooltip';
@@ -12,6 +12,8 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 })
 export class ProductCardComponent {
   @Input() product!: Product;
+  @Output() editAd = new EventEmitter<{ type: string }>();
+
   // @Input() product!: GPAProduct;
 
   ngOnInit() {

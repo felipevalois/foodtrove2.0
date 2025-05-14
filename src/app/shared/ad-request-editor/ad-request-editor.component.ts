@@ -17,12 +17,14 @@ import 'ace-builds/src-min-noconflict/ext-language_tools';
   styleUrl: './ad-request-editor.component.scss',
 })
 export class AdRequestEditorComponent implements OnChanges, AfterViewInit {
-  @Input() requestJson!: any;
-  @Input() responseJson: any = null;
+  @Input() adType!: string;
   @Input() onSave!: (result: any) => void;
 
   rawJson = '';
   formattedResponse = '';
+
+  requestJson: any = null;
+  responseJson: any = null;
 
   @ViewChild('editorRequest') requestEditorEl!: ElementRef<HTMLDivElement>;
   @ViewChild('editorResponse') responseEditorEl!: ElementRef<HTMLDivElement>;
@@ -32,20 +34,15 @@ export class AdRequestEditorComponent implements OnChanges, AfterViewInit {
 
   constructor(private kevel: KevelService) {}
 
-  ngOnChanges(changes: SimpleChanges) {
-    if (changes['requestJson'] && this.requestJson) {
-      this.rawJson = JSON.stringify(this.requestJson, null, 2);
-      if (this.requestEditor) {
-        this.requestEditor.setValue(this.rawJson, -1);
-      }
-    }
+  ngOnChanges() {
+    this.requestJson = this.kevel.getLastRequest(this.adType);
+    this.responseJson = this.kevel.getLastResponse(this.adType);
 
-    if (changes['responseJson'] && this.responseJson) {
-      this.formattedResponse = JSON.stringify(this.responseJson, null, 2);
-      if (this.responseEditor) {
-        this.responseEditor.setValue(this.formattedResponse, -1);
-      }
-    }
+    this.rawJson = JSON.stringify(this.requestJson || {}, null, 2);
+    this.formattedResponse = JSON.stringify(this.responseJson || {}, null, 2);
+
+    if (this.requestEditor) this.requestEditor.setValue(this.rawJson, -1);
+    if (this.responseEditor) this.responseEditor.setValue(this.formattedResponse, -1);
   }
 
   ngAfterViewInit() {
@@ -67,24 +64,23 @@ export class AdRequestEditorComponent implements OnChanges, AfterViewInit {
     this.responseEditor.setOptions({ fontSize: '14px', readOnly: true, showLineNumbers: false });
     this.responseEditor.setHighlightActiveLine(false);
     this.responseEditor.setValue(this.formattedResponse || '', -1);
-
-
   }
 
   updateRequest() {
     const parsed = JSON.parse(this.rawJson);
-    this.kevel.getAd(parsed).subscribe((res) => {
+    this.kevel.getAd(this.adType, parsed).subscribe((res) => {
       this.responseJson = res;
+      this.kevel.saveLastResponse(this.adType, res);
       this.formattedResponse = JSON.stringify(res, null, 2);
-      if (this.responseEditor) {
-        this.responseEditor.setValue(this.formattedResponse, -1);
-      }
+      this.responseEditor.setValue(this.formattedResponse, -1);
     });
   }
 
   save() {
     if (!this.responseJson) return;
-    this.onSave(this.responseJson.decisions?.banner);
+    // const decisionKey = Object.keys(this.responseJson.decisions)[0];
+    // const ads = this.responseJson.decisions?.[decisionKey] || [];
+    this.onSave(this.responseJson); // <-- pass all
   }
 
   copyToClipboard(content: string) {

@@ -28,13 +28,14 @@ export class ProductListComponent implements OnInit, OnDestroy {
   // allProducts: GPAProduct[] = rawProducts as GPAProduct[];
   // filteredProducts: GPAProduct[] = [];
   // fuse!: Fuse<GPAProduct>;
+  lastRequestsByType: Record<string, { request: any, response: any }> = {};
 
   bannerAd: any;
   plas: any;
   showEditor = false;
 
   editorInput: {
-    requestJson: any;
+    type: any;
     onSave: (updatedAd: any) => void;
   } | null = null;
 
@@ -94,8 +95,10 @@ export class ProductListComponent implements OnInit, OnDestroy {
     };
 
     this.sub.add(
-      this.kevel.getAd(body).subscribe(res => {
+      this.kevel.getAd("banner", body).subscribe(res => {
         const ad = res?.decisions?.banner;
+        this.kevel.saveLastResponse('banner', res); // ✅ Save response
+
         if (ad) {
           this.bannerAd = ad;
           // console.log(JSON.stringify(this.bannerAd));
@@ -106,41 +109,44 @@ export class ProductListComponent implements OnInit, OnDestroy {
   }
 
   getPLAs() {
-    const body = {
-      user: { key: '9d5ada47-7f73-49ab-8268-8d0195ee75fd' },
-      enableBotFiltering: true,
-      consent: { gdpr: true },
-      placements: [
-        {
-          divName: 'PLA',
-          networkId: 11580,
-          siteId: 1294553,
-          adTypes: [320],
-          count: 5
-        }
-      ]
-    };
+    const body = this.buildPLARequest();
 
-    this.sub.add(
-      this.kevel.getAd(body).subscribe(res => {
-        const plaAds = res?.decisions?.PLA as any[] | undefined;
-        if (!plaAds?.length) return;
-
-        /* map every Kevel creative → Product-like object */
-        const plaProducts = plaAds.map((ad) => this.adAsProduct(ad));
-
-        /* fire impressions */
-        plaAds.forEach((ad) =>
-          this.kevel.trackImpression(ad.impressionUrl)
-        );
-
-        /* de-dup on Product ID and prepend the ads */
-        this.mergeAds(plaProducts);
-      })
-    );
-
-    console.log(JSON.stringify(this.plas));
+      this.sub.add(
+        this.kevel.getAd("PLA", body).subscribe(res => {
+          this.kevel.saveLastResponse("PLA", res);
+          this.handlePLAResponse(res);
+        })
+      );
   }
+
+  buildPLARequest(): any {
+  return {
+    user: { key: '9d5ada47-7f73-49ab-8268-8d0195ee75fd' },
+    enableBotFiltering: true,
+    consent: { gdpr: true },
+    placements: [
+      {
+        divName: 'PLA',
+        networkId: 11580,
+        siteId: 1294553,
+        adTypes: [320],
+        count: 5
+      }
+    ]
+  };
+}
+
+handlePLAResponse(response: any): void {
+  const plaAds = response?.decisions?.PLA as any[] | undefined;
+  if (!plaAds?.length) return;
+
+  const plaProducts = plaAds.map((ad) => this.adAsProduct(ad));
+  plaAds.forEach((ad) => this.kevel.trackImpression(ad.impressionUrl));
+  this.mergeAds(plaProducts);
+}
+
+
+
   /** turns the creative’s `contents[0].data.*` into the shape your cards need */
   private adAsProduct(ad: any): Product {
     const d = ad.contents[0].data;
@@ -201,19 +207,48 @@ private mergeAds(ads: Product[]) {
     }
   }
 
-  openEditor(adData: any) {
-    this.editorInput = {
-      requestJson: this.kevel.getLastRequest(), // previously sent body
-      onSave: (updatedAd) => {
-        this.showEditor = false;
-        if (!updatedAd) return;
-  
-        this.bannerAd = updatedAd;
-        this.kevel.trackImpression(updatedAd.impressionUrl);
+openEditor(type: string) {
+  this.editorInput = {
+    type,
+    onSave: (updatedResponse) => {
+      this.showEditor = false;
+      if (!updatedResponse) return;
+
+      this.kevel.saveLastResponse(type, updatedResponse);
+
+      switch (type) {
+        case 'banner': {
+          const ad = updatedResponse.decisions?.banner;
+          if (ad) {
+            this.bannerAd = ad;
+            this.kevel.trackImpression(ad.impressionUrl);
+          }
+          break;
+        }
+
+        case 'PLA': {
+          this.removeAllPLAAds(); // ✅ clear old
+          const ads = Object.values(updatedResponse.decisions || {}).flat() as any[];
+          const newProducts = ads.map(ad => this.adAsProduct(ad));
+          this.mergeAds(newProducts);
+          ads.forEach(ad => this.kevel.trackImpression(ad.impressionUrl));
+          break;
+        }
+
+        default:
+          console.warn('Unknown ad type:', type);
       }
-    };
-    this.showEditor = true;
-  }
+    }
+  };
+
+  this.showEditor = true;
+}
+
+private removeAllPLAAds() {
+  this.allProducts = this.allProducts.filter(p => !(p.isAd));
+  this.filteredProducts = this.filteredProducts.filter(p => !(p.isAd));
+}
+
 
   private buildBrandStrip(brand: string): void {
     const matches = this.allProducts.filter(p => {
