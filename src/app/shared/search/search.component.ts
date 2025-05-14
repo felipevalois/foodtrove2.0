@@ -6,30 +6,37 @@ import Fuse from 'fuse.js';
 import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
-import { Product } from '../../models/product.model';
-import rawProducts from '../../../assets/catalog.json';
+import { Product, GPAProduct } from '../../models/product.model';
+import rawProducts from '../../../assets/catalog/catalog.json'; // OR catalog.json
 
 import { SearchService } from '../../services/search.service'; // adjust path if needed
 import { Router } from '@angular/router';
-
+import { SearchFlowComponent } from '../search-flow/search-flow.component';
 
 @Component({
   selector: 'app-search',
   standalone: true,
-  imports: [CommonModule, FormsModule], // ✅ Required for *ngIf, *ngFor, ngModel
+  imports: [CommonModule, FormsModule, SearchFlowComponent], // ✅ Required for *ngIf, *ngFor, ngModel
   templateUrl: './search.component.html',
 })
 
 export class SearchComponent implements OnInit {
   query: string = '';
-  results: Product[] = [];
   categories: string[] = [];
-
+ 
+  //foodtrove
+  results: Product[] = [];
   allProducts: Product[] = rawProducts as Product[];
-  fuse!: Fuse<Product>; // 🔍 the fuzzy search engine
+  fuse!: Fuse<Product>; 
 
+  //gpa
+  // results: GPAProduct[] = [];
+  // allProducts: GPAProduct[] = rawProducts as GPAProduct[];
+  // fuse!: Fuse<GPAProduct>; 
+  
   search$ = new Subject<string>();
   selectedCategory: string = 'All';
+  showFlow = false;
 
 
   constructor(private searchService: SearchService, private router: Router) {
@@ -37,13 +44,14 @@ export class SearchComponent implements OnInit {
 
   ngOnInit(): void {
     this.categories = [
-      ...new Set(this.allProducts.map((p) => p['Main Category Name']))
+      ...new Set(this.allProducts.map((p) => p['Main Category Name'])) // OR Main Category Name
     ];
   
     // ✅ Set up Fuse
     this.fuse = new Fuse(this.allProducts, {
-      keys: ['Name of product', 'Brand name'],
-      threshold: 0.4, // Adjust sensitivity
+      keys: ['Name of product'], // OR 'brand' or 'category'
+      // keys: ['name'],
+      threshold: 0.3, // Adjust sensitivity
     });
   
     this.search$
@@ -63,6 +71,7 @@ export class SearchComponent implements OnInit {
   
     const fuseResults = this.fuse.search(q);
     this.results = fuseResults.map(r => r.item).slice(0, 5);
+    console.log(this.results)
   }
 
   triggerSearch() {

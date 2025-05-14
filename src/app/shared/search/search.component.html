@@ -1,23 +1,10 @@
 <div class="relative w-[500px]">
   <div class="flex border rounded-lg overflow-hidden h-10 bg-white">
-
-    <!-- Category Picker -->
-    <!-- <div class="flex items-center px-3 bg-gray-100">
-      <select
-        class="text-sm text-black bg-transparent focus:outline-none truncate max-w-[120px]"
-        [ngStyle]="{ 'font-size': selectedCategory.length > 18 ? '0.75rem' : '0.875rem' }"
-        [(ngModel)]="selectedCategory"
-      >
-      <option>All</option>
-        <option *ngFor="let cat of categories">{{ cat }}</option>
-      </select>
-    </div> -->
-
+    <!-- Category Dropdown (Placeholder) -->
     <div class="flex items-center bg-gray-100 px-3 h-full text-black text-sm pointer-events-none select-none">
       <span class="mr-1">All</span>
       <span class="material-icons text-xs text-gray-500">expand_more</span>
     </div>
-    
 
     <!-- Divider -->
     <div class="w-px h-full bg-gray-300"></div>
@@ -41,16 +28,63 @@
   <!-- Search results -->
   <ul *ngIf="results.length" class="absolute bg-white border w-full shadow z-10 mt-1 rounded text-sm">
     <li
-      *ngFor="let item of results"
-      (click)="triggerSearchFromResult(item['Name of product'])"
-      class="flex items-center gap-3 px-3 py-2 hover:bg-gray-100 cursor-pointer"
+    *ngFor="let item of results; let i = index"
+    class="relative flex gap-3 px-3 py-2 cursor-pointer group hover:bg-gray-100"
+    (click)="triggerSearchFromResult(item['Name of product'])" 
     >
-      <img [src]="item['Product image']" alt="Product" class="h-10 w-10 object-cover rounded" />
-      <div class="flex-1">
+    <!-- (click)="triggerSearchFromResult(item['name'])" -->
+    <!-- Sponsored Indicator Bar -->
+    <div *ngIf="i === 0" class="absolute left-0 top-0 bottom-0 w-1 bg-indigo-500 rounded-l"></div>
+  
+    <!-- Pencil Icon (top-right) -->
+    <button
+      *ngIf="i === 0"
+      class="absolute top-2 right-2 w-5 h-5 flex items-center justify-center bg-white border border-gray-200 rounded-[4px] text-indigo-600 shadow-sm hover:border-indigo-400 z-10"
+      (click)="showFlow = true"
+    >
+      <svg viewBox="64 64 896 896" width="10" height="10" fill="currentColor">
+        <path d="M257.7 752c2 0 4-.2 6-.5L431.9 722c2-.4 3.9-1.3 5.3-2.8l423.9-423.9a9.96 9.96 0 000-14.1L694.9 114.9c-1.9-1.9-4.4-2.9-7.1-2.9s-5.2 1-7.1 2.9L256.8 538.8c-1.5 1.5-2.4 3.3-2.8 5.3l-29.5 168.2a33.5 33.5 0 009.4 29.8c6.6 6.4 14.9 9.9 23.8 9.9z"></path>
+      </svg>
+    </button>
+  
+    <!-- Product Image -->
+    <img [src]="item['Product image']" alt="Product" class="h-10 w-10 object-cover rounded" />
+    <!-- <img [src]="item['image']" alt="Product" class="h-10 w-10 object-cover rounded" /> -->
+
+  
+    <!-- Info & Price -->
+    <div class="flex-1 flex flex-col justify-between py-1 pr-12">
+      <div>
         <p class="font-medium">{{ item['Name of product'] }}</p>
         <p class="text-xs text-gray-500">{{ item['Brand name'] }}</p>
+        <!-- <p class="font-medium">{{ item['name'] }}</p> -->
+        <!-- <p class="text-xs text-gray-500">{{ item['brand'] }}</p> -->
+        <p *ngIf="i === 0" class="text-xs text-indigo-500 font-medium">Sponsored</p>
       </div>
-      <div class="text-sm font-semibold text-indigo-600">${{ item['Sale_Price'] }}</div>
-    </li>
+    </div>
+  
+    <!-- Bottom-right price tag -->
+    <div class="absolute right-3 bottom-2 text-sm font-semibold text-indigo-600">${{ item['Sale_Price'] }}</div>
+    <!-- <div class="absolute right-3 bottom-2 text-sm font-semibold text-indigo-600">${{ item['price'] }}</div> -->
+  </li>
+  
+  
+
   </ul>
+</div>
+
+
+<div
+  *ngIf="showFlow"
+  class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+>
+<div class="bg-white p-6 rounded-lg w-full max-w-[1200px] overflow-x-auto">
+    <button
+      class="absolute top-3 right-3 text-gray-400 hover:text-gray-600"
+      (click)="showFlow = false"
+    >
+      <span class="material-symbols-outlined">close</span>
+    </button>
+    <app-search-flow></app-search-flow>
+  </div>
 </div>

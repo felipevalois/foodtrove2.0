@@ -752,5 +752,84 @@
       "Star_Rating": 5.0,
       "Product image": "https://static.adzerk.net/Advertisers/foodtrove_1710526723/Peanuts-Natural-Flavor_1.png",
       "Main Category Name": "Nuts"
-    }
+    },
+      {
+        "Product ID": 59,
+        "Brand ID": 2762035,
+        "Categories": [2, 6],
+        "Sale_Price": 3,
+        "Main Category ID": 6,
+        "Price": 5,
+        "Brand name": "Wonderful",
+        "Name of product": "Wonderful Pistachios, Sea Salt & Vinegar, 22 oz",
+        "Star_Rating": 4.6,
+        "Product image": "https://m.media-amazon.com/images/I/71SiFBqpDAL._AC_SR292,236_CB1169409_QL70_.jpg",
+        "Main Category Name": "Nuts"
+      },
+      {
+        "Product ID": 60,
+        "Brand ID": 2762035,
+        "Categories": [2, 6],
+        "Sale_Price": 3,
+        "Main Category ID": 6,
+        "Price": 5,
+        "Brand name": "Wonderful",
+        "Name of product": "Wonderful Pistachios No Shell, Roasted with No Salt, 16 oz",
+        "Star_Rating": 4.6,
+        "Product image": "https://m.media-amazon.com/images/I/716HIcatc9L._AC_SR292,236_CB1169409_QL70_.jpg",
+        "Main Category Name": "Nuts"
+      },
+      {
+        "Product ID": 61,
+        "Brand ID": 2762035,
+        "Categories": [2, 6],
+        "Sale_Price": 3,
+        "Main Category ID": 6,
+        "Price": 5,
+        "Brand name": "Wonderful",
+        "Name of product": "Wonderful Pistachios, Lightly Salted, 12 oz",
+        "Star_Rating": 4.6,
+        "Product image": "https://m.media-amazon.com/images/I/71QQdOoILzL._AC_SR292,236_CB1169409_QL70_.jpg",
+        "Main Category Name": "Nuts"
+      },
+      {
+        "Product ID": 62,
+        "Brand ID": 2762035,
+        "Categories": [2, 6],
+        "Sale_Price": 3,
+        "Main Category ID": 6,
+        "Price": 5,
+        "Brand name": "Wonderful",
+        "Name of product": "Wonderful Pistachios, Sea Salt & Vinegar, 22 oz",
+        "Star_Rating": 4.6,
+        "Product image": "https://m.media-amazon.com/images/I/71SiFBqpDAL._AC_SR292,236_CB1169409_QL70_.jpg",
+        "Main Category Name": "Nuts"
+      },
+      {
+        "Product ID": 63,
+        "Brand ID": 2762035,
+        "Categories": [2, 6],
+        "Sale_Price": 3,
+        "Main Category ID": 6,
+        "Price": 5,
+        "Brand name": "Wonderful",
+        "Name of product": "Wonderful Pistachios No Shell, Roasted with No Salt, 16 oz",
+        "Star_Rating": 4.6,
+        "Product image": "https://m.media-amazon.com/images/I/716HIcatc9L._AC_SR292,236_CB1169409_QL70_.jpg",
+        "Main Category Name": "Nuts"
+      },
+      {
+        "Product ID": 64,
+        "Brand ID": 2762035,
+        "Categories": [2, 6],
+        "Sale_Price": 3,
+        "Main Category ID": 6,
+        "Price": 5,
+        "Brand name": "Wonderful",
+        "Name of product": "Wonderful Pistachios, Lightly Salted, 12 oz",
+        "Star_Rating": 4.6,
+        "Product image": "https://m.media-amazon.com/images/I/71QQdOoILzL._AC_SR292,236_CB1169409_QL70_.jpg",
+        "Main Category Name": "Nuts"
+      }
+
   ]

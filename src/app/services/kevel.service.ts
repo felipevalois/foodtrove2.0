@@ -39,7 +39,7 @@ export class KevelService {
     });
   }
 
-  getBannerAd(body: any): Observable<any> {
+  getAd(body: any): Observable<any> {
     this.lastRequestBody = body;
     return this.http.post(this.endpoint, body);
   }
@@ -47,4 +47,11 @@ export class KevelService {
   getLastRequest(): any {
     return this.lastRequestBody;
   }
+
+
+  getSearchAd(body: any): Observable<any> {
+    this.lastRequestBody = body;
+    return this.http.post(this.endpoint, body);
+  }
+
 }
